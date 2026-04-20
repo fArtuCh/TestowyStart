@@ -1,0 +1,20 @@
+{
+  "name": "mytestapp-web",
+  "version": "1.0.0",
+  "description": "MyTestApp Web Front-end with SCSS styling",
+  "scripts": {
+    "scss:build": "sass MyTestApp.Web/wwwroot/styles.scss MyTestApp.Web/wwwroot/styles.css",
+    "scss:watch": "sass --watch MyTestApp.Web/wwwroot:MyTestApp.Web/wwwroot",
+    "scss:build-min": "sass --style=compressed MyTestApp.Web/wwwroot/styles.scss MyTestApp.Web/wwwroot/styles.min.css"
+  },
+  "devDependencies": {
+    "sass": "^1.70.0"
+  },
+  "keywords": [
+    "aspire",
+    "blazor",
+    "scss"
+  ],
+  "author": "",
+  "license": "MIT"
+}

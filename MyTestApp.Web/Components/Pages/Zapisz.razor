@@ -1,0 +1,114 @@
+@page "/zapisz"
+@rendermode InteractiveServer
+@inject WpisApiClient WpisClient
+
+<PageTitle>Zapisz dane</PageTitle>
+
+<div class="zapisz-component">
+    <h1>Zapisywanie danych do bazy</h1>
+    <p class="opis">Wprowadź tekst i kliknij przycisk, aby zapisać dane do bazy PostgreSQL.</p>
+
+    @if (!string.IsNullOrEmpty(komunikat))
+    {
+        <div class="alert @alertKlasa" role="alert">@komunikat</div>
+    }
+
+    <div class="zapisz-formularz">
+        <div class="mb-3">
+            <label for="tresc" class="form-label">Treść wpisu:</label>
+            <input type="text" id="tresc" class="form-control" @bind="tresc"
+                   placeholder="Wpisz tekst do zapisania..." />
+        </div>
+        <button class="btn btn-primary zapisz-btn" @onclick="ZapiszDane" disabled="@zapisywanie">
+            @if (zapisywanie)
+            {
+                <span>Zapisywanie...</span>
+            }
+            else
+            {
+                <span>Zapisz dane</span>
+            }
+        </button>
+    </div>
+
+    <div class="lista-section">
+        <h2>Zapisane wpisy (@(wpisy?.Length ?? 0))</h2>
+
+        @if (wpisy == null)
+        {
+            <p>Ładowanie danych...</p>
+        }
+        else if (wpisy.Length == 0)
+        {
+            <p class="brak-danych">Brak wpisów. Kliknij przycisk powyżej, aby dodać pierwszy wpis.</p>
+        }
+        else
+        {
+            <ul class="lista-wpisow">
+                @foreach (var wpis in wpisy)
+                {
+                    <li class="wpis-element">
+                        <span class="wpis-tresc">@wpis.Tresc</span>
+                        <span class="wpis-data">@wpis.DataDodania.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")</span>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</div>
+
+@code {
+    private string tresc = "";
+    private string komunikat = "";
+    private string alertKlasa = "";
+    private bool zapisywanie = false;
+    private WpisItem[]? wpisy;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ZaladujWpisy();
+    }
+
+    private async Task ZapiszDane()
+    {
+        if (string.IsNullOrWhiteSpace(tresc))
+        {
+            komunikat = "Proszę wpisać treść przed zapisaniem.";
+            alertKlasa = "alert-warning";
+            return;
+        }
+
+        zapisywanie = true;
+        komunikat = "";
+
+        try
+        {
+            await WpisClient.SaveWpisAsync(tresc);
+            komunikat = "Dane zostały pomyślnie zapisane do bazy danych!";
+            alertKlasa = "alert-success";
+            tresc = "";
+            await ZaladujWpisy();
+        }
+        catch
+        {
+            komunikat = "Wystąpił błąd podczas zapisywania danych.";
+            alertKlasa = "alert-danger";
+        }
+        finally
+        {
+            zapisywanie = false;
+        }
+    }
+
+    private async Task ZaladujWpisy()
+    {
+        try
+        {
+            wpisy = await WpisClient.GetWpisyAsync();
+        }
+        catch
+        {
+            wpisy = [];
+        }
+    }
+}
