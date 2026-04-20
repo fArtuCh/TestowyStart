@@ -13,7 +13,7 @@
                 "${workspaceFolder}/MyTestApp.Web/MyTestApp.Web.csproj"
             ],
             "cwd": "${workspaceFolder}",
-            "console": "internalConsole",
+            "console": "integratedTerminal",
             "stopAtEntry": false,
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
@@ -35,7 +35,7 @@
                 "${workspaceFolder}/MyTestApp.ApiService/MyTestApp.ApiService.csproj"
             ],
             "cwd": "${workspaceFolder}",
-            "console": "internalConsole",
+            "console": "integratedTerminal",
             "stopAtEntry": false,
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
